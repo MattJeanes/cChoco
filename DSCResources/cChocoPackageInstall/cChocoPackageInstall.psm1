@@ -139,6 +139,20 @@ function Set-TargetResource
             InstallPackage -pName $Name -pParams $Params -pVersion $versionToInstall -pSource $Source -cParams $chocoParams
         }
     }
+
+    # check state of package
+    $isInstalled = IsPackageInstalled -pName $Name
+
+    if ($Ensure -eq 'Absent') {
+        if ($isInstalled -eq $true) {
+            throw "Failed to uninstall Chocolatey package '$Name'."
+        }
+    }
+    else {
+        if ($isInstalled -eq $false) {
+            throw "Failed to install Chocolatey package '$Name'."
+        }
+    }
 }
 
 function Test-TargetResource
